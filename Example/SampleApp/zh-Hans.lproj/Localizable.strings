@@ -1,0 +1,13 @@
+/* 
+  Localizable.strings
+  SampleApp
+
+  Created by Mikael on 2018-04-30.
+  Copyright © 2018 Mikael. All rights reserved.
+*/
+
+
+"HELLO" = "你好";
+//"HELLO" = "哈喽"; // Uncomment to get redefined key error
+//"GOODBYE" = "再见";
+"SUGGESTION" = "去%@你自己%d次吧";

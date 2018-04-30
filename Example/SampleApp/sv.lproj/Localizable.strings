@@ -1,0 +1,12 @@
+/* 
+  Localizable.strings
+  SampleApp
+
+  Created by Mikael on 2018-04-30.
+  Copyright © 2018 Mikael. All rights reserved.
+*/
+
+
+"HELLO" = "Hej";
+"GOODBYE" = "Hejdå";
+"SUGGESTION" = "Vad sägs om att gå och %@ dig själv";
