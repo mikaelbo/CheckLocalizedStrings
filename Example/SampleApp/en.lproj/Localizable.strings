@@ -10,3 +10,4 @@
 "HELLO" = "Hello";
 "GOODBYE" = "Goodbye";
 "SUGGESTION" = "Why don't you go and %@ yourself";
+"SOMETHING" = "Something";
