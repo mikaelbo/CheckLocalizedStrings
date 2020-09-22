@@ -47,7 +47,7 @@ struct LocalizedString {
 
 guard let scriptPath = CommandLine.arguments.first, let projectPath = CommandLine.arguments[safe: 1] else {
     print("PROJECT DIR argument not found")
-    exit(1)
+    exit(0)
 }
 
 let currentDirectoryURL = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
@@ -79,7 +79,7 @@ func main() {
     let keysAndLanguages = findExistingLocalizedKeysAndLanguages()
     let existingKeys = keysAndLanguages.keys
     let languages = keysAndLanguages.languages
-    let usedKeys = findUsedKeys()
+    let usedKeys = findUsedLocalizedStringKeys()
     let missingKeys = findMissingKeys(existingKeys: existingKeys, usedKeys: usedKeys, languages: languages)
     let unusedKeys = findUnusedKeys(existingKeys: existingKeys, usedKeys: usedKeys)
     let mismatchedParameters = findMismatchedParameters(existingKeys: existingKeys)
@@ -94,8 +94,10 @@ func findExistingLocalizedKeysAndLanguages() -> (keys: [String: [LocalizedValue]
     let strings = allPaths.filter { return $0.hasSuffix("Localizable.strings") }
     var keys = [String: [LocalizedValue]]()
     var languages = Set<String>()
+    var fileCount = 0
 
     for file in strings {
+        fileCount += 1
         for localizedString in localizedStringKeyValues(inFile: file) {
             let value = LocalizedValue(value: localizedString.value,
                                        path: file,
@@ -118,7 +120,7 @@ func findExistingLocalizedKeysAndLanguages() -> (keys: [String: [LocalizedValue]
             languages.insert(language)
         }
     }
-    print("Found \(keys.count) defined string keys in \(strings.count) files")
+    print("Found \(keys.count) defined string keys in \(fileCount) files")
     return (keys, languages)
 }
 
@@ -148,13 +150,13 @@ func localizedStringKeyValue(atLine line: String, lineNumber: Int) -> LocalizedS
 
 // MARK: - Used keys
 
-func findUsedKeys() -> [String: [LocalizedValue]] {
+func findUsedLocalizedStringKeys() -> [String: [LocalizedValue]] {
     let files = allPaths.filter {
-        return ($0.hasSuffix(".m") || $0.hasSuffix(".swift")) && !$0.hasSuffix("main.swift")
+        return ($0.hasSuffix(".m") || $0.hasSuffix(".swift") || pathIsStoryboardOrXib($0)) && !$0.hasSuffix("main.swift")
     }
     var keys = [String: [LocalizedValue]]()
     for file in files {
-        for key in usedKeys(inFile: file) {
+        for key in localizedStringKeys(inFile: file) {
             if var values = keys[key.value] {
                 values.append(key)
                 keys[key.value] = values
@@ -166,19 +168,20 @@ func findUsedKeys() -> [String: [LocalizedValue]] {
     return keys
 }
 
-func usedKeys(inFile path: String) -> [LocalizedValue] {
+func localizedStringKeys(inFile path: String) -> [LocalizedValue] {
     var localizedStringsArray = [LocalizedValue]()
     for (index, line) in lines(inFile: path).enumerated() {
         if !line.hasPrefix("//") {
-            let stringKeys = usedKeys(atLine: line, inPath: path, lineNumber: index + 1)
+            let stringKeys = localizedStringKeys(atLine: line, inPath: path, lineNumber: index + 1)
             localizedStringsArray.append(contentsOf: stringKeys)
         }
     }
     return localizedStringsArray
 }
 
-func usedKeys(atLine line: String, inPath path: String, lineNumber: Int) -> [LocalizedValue] {
-    let results = line.matches(for: "NSLocalizedString\\(.*?@?\"(.*?)\"\\,")
+func localizedStringKeys(atLine line: String, inPath path: String, lineNumber: Int) -> [LocalizedValue] {
+    let regex = pathIsStoryboardOrXib(path) ? "value=\"(.*?)\"" : "LocalizedString\\(.*?@?\"(.*?)\"\\)"
+    let results = line.matches(for: regex)
     return results.compactMap {
         if let range = Range($0.range(at: 1), in: line) {
             return LocalizedValue(value: String(line[range]), path: path, lineNumber: lineNumber)
@@ -234,19 +237,19 @@ func findUnusedKeys(existingKeys: [String: [LocalizedValue]],
 
 func findMismatchedParameters(existingKeys: [String : [LocalizedValue]]) -> [String: [LocalizedValue]] {
     var mismatchedKeys = [String: [LocalizedValue]]()
-    for (key, localizedValues) in existingKeys {
-        if !parametersAreMatching(inValues: localizedValues) {
-            mismatchedKeys[key] = localizedValues
+    for (key, values) in existingKeys {
+        if !parametersAreMatching(inValues: values) {
+            mismatchedKeys[key] = values
         }
     }
     return mismatchedKeys
 }
 
-func parametersAreMatching(inValues localizedValues: [LocalizedValue]) -> Bool {
+func parametersAreMatching(inValues values: [LocalizedValue]) -> Bool {
     let keys = "%(?:\\d+\\$)?[+-]?(?:[lh]{0,2})(?:[qLztj])?(?:[ 0]|'.{1})?\\d*(?:\\.\\d+)?[@dDiuUxXoOfeEgGcCsSpaAFn]"
     var previousParams: [String]?
-    for localizedValue in localizedValues {
-        let string = localizedValue.value
+    for value in values {
+        let string = value.value
         let params: [String] = string.matches(for: keys).compactMap {
             if let range = Range($0.range, in: string) {
                 return String(string[range])
@@ -277,8 +280,8 @@ func lines(inFile path: String, encoding: String.Encoding = .utf8) -> [String] {
         return string.components(separatedBy: .newlines)
     } catch {
         print(error)
-        return [String]()
     }
+    return [String]()
 }
 
 func language(forPath path: String) -> String? {
@@ -289,11 +292,15 @@ func language(forPath path: String) -> String? {
     return nil
 }
 
+func pathIsStoryboardOrXib(_ path: String) -> Bool {
+    return path.hasSuffix(".storyboard") || path.hasSuffix(".xib")
+}
+
 func path(forLanguage language: String) -> String? {
     return allPaths.filter { return $0.hasSuffix("\(language).lproj/Localizable.strings") }.first
 }
 
-// MARK: - Printing
+// MARK: Printing
 
 func printUnusedKeys(_ keys: [String: [LocalizedValue]], printIndividually: Bool = false) {
     if keys.isEmpty {
