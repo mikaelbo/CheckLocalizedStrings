@@ -3,7 +3,7 @@
 //  Main.swift
 //  CheckLocalizedStrings
 //
-//  Created by Mikael (https://github.com/mikaelbo) on 2018-04-30.
+//  Created by Mikael (https://github.com/mikaelbo) on 2018-04-02.
 //  Copyright © 2018 Mikael. All rights reserved.
 //
 
@@ -180,7 +180,7 @@ func localizedStringKeys(inFile path: String) -> [LocalizedValue] {
 }
 
 func localizedStringKeys(atLine line: String, inPath path: String, lineNumber: Int) -> [LocalizedValue] {
-    let regex = pathIsStoryboardOrXib(path) ? "value=\"(.*?)\"" : "NSLocalizedString\\(.*?@?\"(.*?)\"\\)"
+    let regex = pathIsStoryboardOrXib(path) ? "keyPath=\"localizedString\" value=\"(.*?)\"" : "NSLocalizedString\\(.*?@?\"(.*?)\"\\,"
     let results = line.matches(for: regex)
     return results.compactMap {
         if let range = Range($0.range(at: 1), in: line) {
@@ -197,6 +197,15 @@ func findMissingKeys(existingKeys: [String: [LocalizedValue]],
                      languages projectLanguages: Set<String>) -> [String: Set<String>] {
     var missingKeys = [String: Set<String>]()
     for key in existingKeys.keys {
+        let keyLanguages = languages(forKey: key, inKeys: existingKeys)
+        let missingLanguages = Set(projectLanguages.compactMap {
+            return keyLanguages.contains($0) ? nil : $0
+        })
+        if !missingLanguages.isEmpty {
+            missingKeys[key] = missingLanguages
+        }
+    }
+    for key in usedKeys.keys {
         let keyLanguages = languages(forKey: key, inKeys: existingKeys)
         let missingLanguages = Set(projectLanguages.compactMap {
             return keyLanguages.contains($0) ? nil : $0
