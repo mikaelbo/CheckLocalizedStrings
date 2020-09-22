@@ -180,7 +180,7 @@ func localizedStringKeys(inFile path: String) -> [LocalizedValue] {
 }
 
 func localizedStringKeys(atLine line: String, inPath path: String, lineNumber: Int) -> [LocalizedValue] {
-    let regex = pathIsStoryboardOrXib(path) ? "value=\"(.*?)\"" : "LocalizedString\\(.*?@?\"(.*?)\"\\)"
+    let regex = pathIsStoryboardOrXib(path) ? "value=\"(.*?)\"" : "NSLocalizedString\\(.*?@?\"(.*?)\"\\)"
     let results = line.matches(for: regex)
     return results.compactMap {
         if let range = Range($0.range(at: 1), in: line) {
