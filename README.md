@@ -8,7 +8,6 @@
 - [x] Check for **missing keys**
 - [x] Check for **mismatched parameters**
 - [x] Check for **duplicate definitions** of a key
-- [ ] Prune **unused** keys
 
 ## Installation
 Under your Target's Build phase, add a  `Run Script`. Use the path where you copied the script file to. Make sure to include `$PROJECT_DIR` as an argument.
