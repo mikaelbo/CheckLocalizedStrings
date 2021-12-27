@@ -50,6 +50,18 @@ guard let scriptPath = CommandLine.arguments.first, let projectPath = CommandLin
     exit(0)
 }
 
+let functionCall = CommandLine.arguments[safe: 2] ?? "NSLocalizedString"
+
+var variables = [""]
+if let vars = CommandLine.arguments[safe: 3] {
+    variables = vars.components(separatedBy: ",")
+}
+
+var ignoreFiles = ["main.swift"]
+if let files = CommandLine.arguments[safe: 4] {
+    ignoreFiles.append(contentsOf: files.components(separatedBy: ","))
+}
+
 let currentDirectoryURL = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
 let url = URL(fileURLWithPath: scriptPath, relativeTo: currentDirectoryURL)
 let scriptRelativePath = url.path.replacingOccurrences(of: currentDirectoryURL.path + "/", with: "")
@@ -152,11 +164,19 @@ func localizedStringKeyValue(atLine line: String, lineNumber: Int) -> LocalizedS
 
 func findUsedLocalizedStringKeys() -> [String: [LocalizedValue]] {
     let files = allPaths.filter {
-        return ($0.hasSuffix(".m") || $0.hasSuffix(".swift") || pathIsStoryboardOrXib($0)) && !$0.hasSuffix("main.swift")
+        for file in ignoreFiles {
+            if $0.hasSuffix(file) {
+                return false
+            }
+        }
+        return ($0.hasSuffix(".m") || $0.hasSuffix(".swift") || pathIsStoryboardOrXib($0))
     }
     var keys = [String: [LocalizedValue]]()
     for file in files {
         for key in localizedStringKeys(inFile: file) {
+            print(key.value)
+            print(key.path)
+            print(key.lineNumber)
             if var values = keys[key.value] {
                 values.append(key)
                 keys[key.value] = values
@@ -180,13 +200,31 @@ func localizedStringKeys(inFile path: String) -> [LocalizedValue] {
 }
 
 func localizedStringKeys(atLine line: String, inPath path: String, lineNumber: Int) -> [LocalizedValue] {
-    let regex = pathIsStoryboardOrXib(path) ? "keyPath=\"localizedString\" value=\"(.*?)\"" : "NSLocalizedString\\(.*?@?\"(.*?)\"\\,"
-    let results = line.matches(for: regex)
-    return results.compactMap {
-        if let range = Range($0.range(at: 1), in: line) {
-            return LocalizedValue(value: String(line[range]), path: path, lineNumber: lineNumber)
+    if pathIsStoryboardOrXib(path) {
+        var matches = [NSTextCheckingResult]()
+        for variable in variables {
+            matches.append(contentsOf: line.matches(for: "keyPath=\"\(variable)\" value=\"(.*?)\""))
         }
-        return nil
+        return matches.compactMap {
+            if let range = Range($0.range(at: 1), in: line) {
+                return LocalizedValue(value: String(line[range]), path: path, lineNumber: lineNumber)
+            }
+            return nil
+        }
+    } else {
+        var matches = [NSTextCheckingResult]()
+        matches.append(contentsOf: line.matches(for: "\(functionCall)\\(*?@?\"(.*?)\"[,)]"))
+
+        for variable in variables {
+            matches.append(contentsOf: line.matches(for: "\(variable) = \"(.*?)\""))
+        }
+
+        return matches.compactMap {
+            if let range = Range($0.range(at: 1), in: line) {
+                return LocalizedValue(value: String(line[range]), path: path, lineNumber: lineNumber)
+            }
+            return nil
+        }
     }
 }
 
