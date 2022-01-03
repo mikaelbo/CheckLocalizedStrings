@@ -140,7 +140,7 @@ func localizedStringKeyValues(inFile path: String) -> [LocalizedString] {
     var localizedKeys = [LocalizedString]()
     for (index, line) in lines(inFile: path, encoding: .utf8).enumerated() {
         if !line.hasPrefix("//"),
-            let localizedKey = localizedStringKeyValue(atLine: line, lineNumber: index + 1) {
+           let localizedKey = localizedStringKeyValue(atLine: line, lineNumber: index + 1) {
             localizedKeys.append(localizedKey)
         }
     }
@@ -150,9 +150,9 @@ func localizedStringKeyValues(inFile path: String) -> [LocalizedString] {
 func localizedStringKeyValue(atLine line: String, lineNumber: Int) -> LocalizedString? {
     let results = line.matches(for: "^\\s*\"(.+)\"\\s*=\\s*\"(.*)\"\\s*;")
     if let result = results.first,
-        result.numberOfRanges > 2,
-        let first = Range(result.range(at: 1), in: line),
-        let second = Range(result.range(at: 2), in: line) {
+       result.numberOfRanges > 2,
+       let first = Range(result.range(at: 1), in: line),
+       let second = Range(result.range(at: 2), in: line) {
         return LocalizedString(key: String(line[first]),
                                value: String(line[second]),
                                lineNumber: lineNumber)
@@ -330,7 +330,7 @@ func lines(inFile path: String, encoding: String.Encoding = .utf8) -> [String] {
 
 func language(forPath path: String) -> String? {
     if let result = path.matches(for: "([^\\/]*)\\.lproj").first,
-        let range = Range(result.range(at: 1), in: path) {
+       let range = Range(result.range(at: 1), in: path) {
         return String(path[range])
     }
     return nil
