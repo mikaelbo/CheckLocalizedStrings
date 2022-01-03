@@ -24,3 +24,13 @@ The script takes 4 arguments. The first one, already included in the above snipp
 2. Localized string function names (comma separated). Default: **NSLocalizedString**
 3. Storyboard/XIB localized function variables (comma separated). *(See LocalizableViews in SampleApp for usage)*
 4. Ignore files
+
+If you need to skip argument 3, you can pass an empty string:
+
+```shell
+"${SOURCE_ROOT}"/{PATH_TO_SCRIPT} $PROJECT_DIR NSLocalizedString "" LanguageDefines.swift
+```
+
+## License
+
+CheckLocalizedStrings is available under the MIT license. See the LICENSE file for more info.

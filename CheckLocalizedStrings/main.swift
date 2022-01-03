@@ -52,14 +52,14 @@ guard let scriptPath = CommandLine.arguments.first, let projectPath = CommandLin
 
 let functionCall = CommandLine.arguments[safe: 2] ?? "NSLocalizedString"
 
-var variables = [""]
+var variables = [String]()
 if let vars = CommandLine.arguments[safe: 3] {
-    variables = vars.components(separatedBy: ",")
+    variables = vars.components(separatedBy: ",").filter{ !$0.isEmpty }
 }
 
 var ignoreFiles = ["main.swift"]
 if let files = CommandLine.arguments[safe: 4] {
-    ignoreFiles.append(contentsOf: files.components(separatedBy: ","))
+    ignoreFiles.append(contentsOf: files.components(separatedBy: ",").filter{ !$0.isEmpty })
 }
 
 let currentDirectoryURL = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
@@ -148,7 +148,7 @@ func localizedStringKeyValues(inFile path: String) -> [LocalizedString] {
 }
 
 func localizedStringKeyValue(atLine line: String, lineNumber: Int) -> LocalizedString? {
-    let results = line.matches(for: "^\\s*\"(.+)\"\\s*=\\s*\"(.+)\"\\s*;")
+    let results = line.matches(for: "^\\s*\"(.+)\"\\s*=\\s*\"(.*)\"\\s*;")
     if let result = results.first,
         result.numberOfRanges > 2,
         let first = Range(result.range(at: 1), in: line),
@@ -174,9 +174,6 @@ func findUsedLocalizedStringKeys() -> [String: [LocalizedValue]] {
     var keys = [String: [LocalizedValue]]()
     for file in files {
         for key in localizedStringKeys(inFile: file) {
-            print(key.value)
-            print(key.path)
-            print(key.lineNumber)
             if var values = keys[key.value] {
                 values.append(key)
                 keys[key.value] = values
