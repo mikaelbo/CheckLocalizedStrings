@@ -10,26 +10,45 @@
 - [x] Check for **duplicate definitions** of a key
 
 ## Installation
-Under your Target's Build phase, add a  `Run Script`. Use the path where you copied the script file to. Make sure to include `$PROJECT_DIR` as an argument.
+
+### Copy script file
+
+Add the script file wherever you see fit, for instance in your project's directory.
+
+Under your Target's Build phase, add a `Run Script`. Use the path where you copied the script file to. Make sure to include `$PROJECT_DIR` as an argument.
 
 ```shell
-"${SOURCE_ROOT}"/{PATH_TO_SCRIPT} $PROJECT_DIR
+"${SOURCE_ROOT}/{PATH_TO_SCRIPT}" $PROJECT_DIR
+```
+
+### CocoaPods
+
+Add the following line to your Podfile:
+
+```shell
+pod 'CheckLocalizedStrings'
+```
+
+Under your Target's Build phase, add a `Run Script`. Add the following line, which invokes the script at its pods directory.
+
+```shell
+"${PODS_ROOT}/CheckLocalizedStrings/main.swift" $PROJECT_DIR
 ```
 
 ### Arguments
 
-The script takes 5 arguments. The first one, already included in the above snippet, is required. The rest are optional.
+The script takes 5 arguments. The first one, already included in the above snippets, is required. The rest are optional.
 
 1. Project directory
-2. Localized string function names (comma separated). Default: **NSLocalizedString**
-3. Storyboard/XIB localized function variables (comma separated). *(See LocalizableViews in SampleApp for usage)*
-4. Ignore files
-5. Print warnings indivually (true or false) Default: **false**
+2. Localized string function name(s) (comma separated). Default: **NSLocalizedString**
+3. Storyboard/XIB localized function variable(s) (comma separated). *(See LocalizableViews in SampleApp for usage)*
+4. Ignore files. **Always Includes main.swift**
+5. Print similar warnings individually (true or false) Default: **false**
 
 If you need to skip argument 3 or 4, you can pass an empty string:
 
 ```shell
-"${SOURCE_ROOT}"/{PATH_TO_SCRIPT} $PROJECT_DIR NSLocalizedString "" "" true
+"${SOURCE_ROOT}/{PATH_TO_SCRIPT}" $PROJECT_DIR NSLocalizedString "" "" true
 ```
 
 ## License
