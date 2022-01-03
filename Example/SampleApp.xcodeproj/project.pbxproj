@@ -16,16 +16,6 @@
 		73CEF61A20726AEA006D9E6E /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 73CEF61820726AEA006D9E6E /* LaunchScreen.storyboard */; };
 /* End PBXBuildFile section */
 
-/* Begin PBXContainerItemProxy section */
-		73F2E7252096072400603648 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 73F2E7212096072400603648 /* CheckLocalizedStrings.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 73CEF5F92072637A006D9E6E;
-			remoteInfo = CheckLocalizedStrings;
-		};
-/* End PBXContainerItemProxy section */
-
 /* Begin PBXFileReference section */
 		733258542519FC9500B71BB3 /* LocalizableViews.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalizableViews.swift; sourceTree = "<group>"; };
 		73497B782075FC2E00CD1DE7 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
@@ -38,7 +28,6 @@
 		73CEF61620726AEA006D9E6E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		73CEF61920726AEA006D9E6E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		73CEF61B20726AEA006D9E6E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		73F2E7212096072400603648 /* CheckLocalizedStrings.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = CheckLocalizedStrings.xcodeproj; path = ../CheckLocalizedStrings/CheckLocalizedStrings.xcodeproj; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -57,7 +46,7 @@
 			children = (
 				73CEF60E20726AE9006D9E6E /* SampleApp */,
 				73CEF60D20726AE9006D9E6E /* Products */,
-				73F2E7212096072400603648 /* CheckLocalizedStrings.xcodeproj */,
+				8054441E368929B21FF4E81A /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -84,12 +73,11 @@
 			path = SampleApp;
 			sourceTree = "<group>";
 		};
-		73F2E7222096072400603648 /* Products */ = {
+		8054441E368929B21FF4E81A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				73F2E7262096072400603648 /* CheckLocalizedStrings */,
 			);
-			name = Products;
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -142,28 +130,12 @@
 			mainGroup = 73CEF60320726AE9006D9E6E;
 			productRefGroup = 73CEF60D20726AE9006D9E6E /* Products */;
 			projectDirPath = "";
-			projectReferences = (
-				{
-					ProductGroup = 73F2E7222096072400603648 /* Products */;
-					ProjectRef = 73F2E7212096072400603648 /* CheckLocalizedStrings.xcodeproj */;
-				},
-			);
 			projectRoot = "";
 			targets = (
 				73CEF60B20726AE9006D9E6E /* SampleApp */,
 			);
 		};
 /* End PBXProject section */
-
-/* Begin PBXReferenceProxy section */
-		73F2E7262096072400603648 /* CheckLocalizedStrings */ = {
-			isa = PBXReferenceProxy;
-			fileType = "compiled.mach-o.executable";
-			path = CheckLocalizedStrings;
-			remoteRef = 73F2E7252096072400603648 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		73CEF60A20726AE9006D9E6E /* Resources */ = {
