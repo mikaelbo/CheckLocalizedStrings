@@ -9,7 +9,7 @@
 Pod::Spec.new do |spec|
 
   spec.name             = "CheckLocalizedStrings"
-  spec.version          = "1.0.0"
+  spec.version          = "1.0.1"
   spec.summary          = "A swift script that verifies your Localizable.strings files"
 
   #spec.description     = <<-DESC
@@ -26,6 +26,6 @@ Pod::Spec.new do |spec|
 
   spec.source           = { :git => "https://github.com/mikaelbo/CheckLocalizedStrings.git", :tag => "#{spec.version}" }
 
-  spec.source_files     = "CheckLocalizedStrings/main.swift"
+  spec.source_files     = "main.swift"
 
 end

@@ -163,7 +163,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SOURCE_ROOT}\"/../CheckLocalizedStrings/main.swift $PROJECT_DIR NSLocalizedString localizedString\n";
+			shellScript = "\"${SOURCE_ROOT}\"/../main.swift $PROJECT_DIR NSLocalizedString localizedString\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
