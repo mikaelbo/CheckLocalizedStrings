@@ -62,6 +62,15 @@ if let files = CommandLine.arguments[safe: 4] {
     ignoreFiles.append(contentsOf: files.components(separatedBy: ",").filter{ !$0.isEmpty })
 }
 
+var printIndividually = false
+if let print = CommandLine.arguments[safe: 5] {
+    if print == "false" {
+        printIndividually = false
+    } else if print == "true" {
+        printIndividually = true
+    }
+}
+
 let currentDirectoryURL = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
 let url = URL(fileURLWithPath: scriptPath, relativeTo: currentDirectoryURL)
 let scriptRelativePath = url.path.replacingOccurrences(of: currentDirectoryURL.path + "/", with: "")
@@ -95,8 +104,8 @@ func main() {
     let missingKeys = findMissingKeys(existingKeys: existingKeys, usedKeys: usedKeys, languages: languages)
     let unusedKeys = findUnusedKeys(existingKeys: existingKeys, usedKeys: usedKeys)
     let mismatchedParameters = findMismatchedParameters(existingKeys: existingKeys)
-    printUnusedKeys(unusedKeys)
-    printMissingKeys(missingKeys)
+    printUnusedKeys(unusedKeys, printIndividually: printIndividually)
+    printMissingKeys(missingKeys, printIndividually: printIndividually)
     printMismatchedParameters(mismatchedParameters)
 }
 
@@ -378,7 +387,12 @@ func printMissingKeys(_ keys: [String: Set<String>], printIndividually: Bool = f
         } else {
             for value in values {
                 let message = "Missing localized string \(key) in \(value)"
-                logWarning(message, path: path(forLanguage: value) ?? "")
+                if let path = path(forLanguage: value) {
+                    logWarning(message, path: path, line: 0)
+                } else {
+                    logWarning(message)
+                }
+
             }
         }
     }
@@ -408,6 +422,8 @@ func log(_ message: String, path: String = "", line: Int? = nil) {
     if let line = line {
         lineString = String(line)
     }
+    print("path: \(path)")
+    print("line: \(lineString)")
     print("\(path):\(lineString): \(message)")
 }
 
