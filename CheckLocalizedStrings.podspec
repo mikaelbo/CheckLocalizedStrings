@@ -24,8 +24,9 @@ Pod::Spec.new do |spec|
   spec.platform         = :ios, "9.0"
   spec.swift_versions   = "5.0"
 
-  spec.source           = { :git => "https://github.com/mikaelbo/CheckLocalizedStrings.git", :tag => "#{spec.version}" }
+  spec.source           = { :http => "#{spec.homepage}/releases/download/#{spec.version}/portable_checklocalizedstrings.zip" }
 
-  spec.source_files     = "main.swift"
+  spec.preserve_path     = "*"
+  # spec.source_files     = "*"
 
 end

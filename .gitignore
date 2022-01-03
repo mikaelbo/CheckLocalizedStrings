@@ -19,3 +19,4 @@ DerivedData
 project.xcworkspace/
 dist/
 *~.nib
+*.build/
