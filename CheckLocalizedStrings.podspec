@@ -27,6 +27,6 @@ Pod::Spec.new do |spec|
   spec.source           = { :git => "https://github.com/mikaelbo/CheckLocalizedStrings.git", :tag => "#{spec.version}" }
 
   # spec.preserve_path     = "*"
-  spec.source_files     = "Binary/CheckLocalizedStrings"
+  spec.source_files     = "Binary/**"
 
 end
