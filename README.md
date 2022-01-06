@@ -18,17 +18,18 @@ Under your Target's Build phase, add a  `Run Script`. Use the path where you cop
 
 ### Arguments
 
-The script takes 4 arguments. The first one, already included in the above snippet, is required. The rest are optional.
+The script takes 5 arguments. The first one, already included in the above snippet, is required. The rest are optional.
 
 1. Project directory
 2. Localized string function names (comma separated). Default: **NSLocalizedString**
 3. Storyboard/XIB localized function variables (comma separated). *(See LocalizableViews in SampleApp for usage)*
 4. Ignore files
+5. Print all warnings individually (will group similar ones in one message). Default: **false**
 
-If you need to skip argument 3, you can pass an empty string:
+If you need to skip argument 3 or 4, you can pass an empty string:
 
 ```shell
-"${SOURCE_ROOT}"/{PATH_TO_SCRIPT} $PROJECT_DIR NSLocalizedString "" LanguageDefines.swift
+"${SOURCE_ROOT}"/{PATH_TO_SCRIPT} $PROJECT_DIR NSLocalizedString "" "" true
 ```
 
 ## License
